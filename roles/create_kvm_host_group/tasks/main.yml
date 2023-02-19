@@ -1,0 +1,20 @@
+---
+- name: DEBUG show vm_kvm_host
+  debug:
+    msg: "DEBUG: vm_kvm_host: {{ vm_kvm_host }}"
+  tags:
+    - never
+    - debug
+
+- name: Add "{{ vm_kvm_host }}" to kvm_hosts
+  add_host:
+    groups: kvm_hosts
+    name: "{{ vm_kvm_host }}"
+  changed_when: false
+
+- name: DEBUG show groups
+  debug:
+    msg: "DEBUG: groups: {{ groups }}"
+  tags:
+    - never
+    - debug

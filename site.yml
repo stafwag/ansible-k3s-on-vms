@@ -1,0 +1,35 @@
+---
+# Create the kvm_hosts group
+# add_host doesn't seem to work with multiple hosts at the
+# same time. Setting serial: 1 to the hosts 1 by 1.
+- hosts: k3s_cluster
+  gather_facts: false
+  become: false
+  serial: 1
+  tasks:
+    - name: Create kvm host group
+      import_role: name=create_kvm_host_group
+      delegate_to: localhost
+
+- hosts: kvm_hosts
+  gather_facts: true
+  become: true
+  roles:
+    - stafwag.libvirt
+
+- name: Setup the virtual machine
+  hosts: k3s_cluster
+  become: true
+  gather_facts: false
+  any_errors_fatal: true
+  roles:
+     - role: stafwag.delegated_vm_install
+       vars:
+         ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+
+- name: Install k3s
+  hosts: k3s_cluster
+  become: true
+  gather_facts: true
+  roles:
+    - role: xanmanning.k3s

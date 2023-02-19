@@ -1,0 +1,49 @@
+k3s_cluster:
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    k3s_become: yes
+    k3s_etcd_datastore: true
+    k3s_use_experimental: true
+    k3s_control_node: true
+    k3s_flannel_interface: enp1s0
+    k3s_server:
+      disable:
+        - servicelb
+        - traefik
+    delegated_vm_install:
+      post:
+        always:
+          true
+        update_ssh_known_hosts:
+          true
+      vm:
+        path: /var/lib/libvirt/images/k3s/
+        boot_disk:
+          src:
+            ~/Downloads/isos/debian/cloud/amd64/debian-11-generic-amd64-daily.qcow2
+          size: 50G
+        memory: 4096
+        cpus: 4
+        dns_nameservers: 9.9.9.9
+        gateway: 192.168.122.1
+        default_user:
+          ssh_authorized_keys:
+            - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+#
+# Set the network "default" is used by default
+#        network: bridge:my-bridge
+        commands:
+          - echo "Installed @ $(date)" > /var/tmp/installed
+  hosts:
+    k3s-master001:
+      ansible_host: 192.168.122.20
+      vm_ip_address: "{{ ansible_host }}"
+      vm_kvm_host: localhost
+    k3s-master002:
+      ansible_host: 192.168.122.21
+      vm_ip_address: "{{ ansible_host }}"
+      vm_kvm_host: localhost
+    k3s-master003:
+      ansible_host: 192.168.122.22
+      vm_ip_address: "{{ ansible_host }}"
+      vm_kvm_host: localhost
