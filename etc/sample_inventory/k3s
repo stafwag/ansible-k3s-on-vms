@@ -23,7 +23,7 @@ k3s_cluster:
             ~/Downloads/isos/debian/cloud/amd64/debian-11-generic-amd64-daily.qcow2
           size: 50G
         memory: 4096
-        cpus: 4
+        cpus: 2
         dns_nameservers: 9.9.9.9
         gateway: 192.168.122.1
         default_user:
