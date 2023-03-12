@@ -1,0 +1,27 @@
+---
+- name: Set OS related variables
+  include_vars: '{{ os_vars }}'
+  with_first_found:
+    - '{{ ansible_distribution }}-{{ ansible_distribution_version}}.yml'
+    - '{{ ansible_distribution }}-{{ ansible_distribution_major_version}}.yml'
+    - '{{ ansible_distribution }}.yml'
+    - '{{ ansible_os_family }}-{{ ansible_pkg_mgr }}.yml'
+    - '{{ ansible_os_family }}.yml'
+    - '{{ ansible_os_family | replace ("/","_") | replace(" ","_") }}.yml'
+    - defaults.yml
+  loop_control:
+    loop_var: os_vars
+
+- name: Run the install play on the dep roles
+  include_role:
+    name: '{{ item }}'
+    tasks_from:
+      install
+  with_items:
+    '{{ required_roles_install }}'
+
+- name: Install packages
+  package:
+    name: '{{ item }}'
+    state: present
+  with_items: '{{ required_packages | default([]) }}'

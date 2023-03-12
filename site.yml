@@ -11,23 +11,29 @@
       import_role: name=create_kvm_host_group
       delegate_to: localhost
 
+# Run the install play on the required roles
+# Install the required packages for on the kvm
+# hypervisors
+- hosts: kvm_hosts
+  gather_facts: true
+  become: true
+  roles:
+     - role: requirements
+
+# Enable the default libvirt network
+# If you want to use a diffirent bridge this
+# needs to configured on the host
 - hosts: kvm_hosts
   gather_facts: true
   become: true
   tasks:
-    - name: Install the requirements
-      include_role:
-        name: "{{ item }}"
-        tasks_from:
-          install
-      with_items:
-        - stafwag.libvirt 
-        - stafwag.qemu_img
-        - stafwag.cloud_localds
-        - stafwag.virt_install_import
-      tags:
-        - install
+    - name: enable default libvirt network
+      community.libvirt.virt_net:
+        autostart: true
+        command: start
+        name: default
 
+# Create the virtual machines
 - name: Setup the virtual machine
   hosts: k3s_cluster
   become: true
@@ -38,6 +44,7 @@
        vars:
          ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
 
+# Install k3s
 - name: Install k3s
   hosts: k3s_cluster
   become: true

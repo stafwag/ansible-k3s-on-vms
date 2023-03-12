@@ -1,0 +1,6 @@
+---
+required_roles_install:
+  - stafwag.libvirt 
+  - stafwag.qemu_img
+  - stafwag.cloud_localds
+  - stafwag.virt_install_import
