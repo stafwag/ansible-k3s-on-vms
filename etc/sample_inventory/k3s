@@ -21,7 +21,7 @@ k3s_cluster:
         path: /var/lib/libvirt/images/k3s/
         boot_disk:
           src:
-            ~/Downloads/isos/debian/cloud/amd64/debian-11-generic-amd64-daily.qcow2
+            ~/Downloads/debian-11-generic-amd64-daily.qcow2
           size: 50G
         memory: 4096
         cpus: 2

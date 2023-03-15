@@ -40,6 +40,29 @@ To install the required roles execute:
 $ ansible-galaxy install -r requirements.yml
 ```
 
+### Debian cloud image
+
+This playbook depends on the Debian bulls-eye cloud image. The playbook will update the packages by default,
+using the daily image will reduce the update time.
+
+Download the Debian cloud image from
+
+[https://cloud.debian.org/images/cloud/bullseye/daily/latest/](https://cloud.debian.org/images/cloud/bullseye/daily/latest/)
+
+The playbook will use ```~/Downloads/debian-11-generic-amd64-daily.qcow2``` by default.
+
+If you want to use another location update ```boot_disk``` ```src``` 
+
+```
+delegated_vm_install:
+      vm:
+        path: /var/lib/libvirt/images/k3s/
+        boot_disk:
+          src:
+            ~/Downloads/debian-11-generic-amd64-daily.qcow2
+```
+
+
 # Usage
 
 ## Inventory
@@ -154,7 +177,16 @@ If you want to another user you can set ```ansible_user``` as part of the host i
 
 #### ssh pub key
 
-The playboot will update ```~/.ssh/authorized_keys``` in the default_user home directory with the ssh public key ````'~/.ssh/id_rsa.pub'```  by default.
+The playboot will update ```~/.ssh/authorized_keys``` in the default_user home directory with the ssh public key ````~/.ssh/id_rsa.pub```  by default.
 If you want to use another ssh public key you can update the 
+
+## Execute playbook
+
+Make that you have access with ssh and the kvm hypervisor hosts (localhost by default).
+If you need to type a sudo password add the ```---ask-become-pass``` argument.
+
+```
+$ ansible-playbook --ask-become-pass site.yml
+```
 
 ***Have fun!***
