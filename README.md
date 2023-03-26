@@ -16,6 +16,8 @@ To install and configure K3s on the virtual machines.
 
 To enable libvirt on the ```vm_kvm_host```.
 
+The sample inventory will install the virtual machines on ```localhost```. It's possible to install the virtual machine on multuple lbvirt/KVM hypervisors
+
 
 ## Requirements
 
@@ -31,6 +33,100 @@ to use this playbook on Centos/RedHat 8.
 * Centos 7
 * RedHat 7
 * Ubuntu
+
+### Ansible
+
+#### Ansible
+
+You use this Ansible playbook, You'll need Ansible install on the Ansible host.
+Install the from your GNU/Linux distribution responsitory.
+
+Or install it using ```pip`` see the official Ansible documentation:
+[https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+
+#### Authentication
+
+For easy usage, it's recommended to set up a Ansible account that accessible over ssh without password authentication.
+You can create a local ssh key with ```ssh-keygen``` or if you really care about security use a smartcard/hsm with 
+a ssh-agent.
+
+###### ssh connection
+
+Install and enable/start the ```sshd``` on the ansible host and the libvirt kvm hypervisor were the virtual machines/K3s will be installed.
+
+####### Local ssh key pair (less security)
+
+To create a local ssh keypair run the ```ssh-keygen``` command.
+
+```
+$ ssh-keygen 
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/staf/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/staf/.ssh/id_rsa
+Your public key has been saved in /home/staf/.ssh/id_rsa.pub
+The key fingerprint is:
+SHA256:L+Ptozbkj5UEv4yfoRj1werntqkhIF6mSSYeRbtsrn4 staf@manjaro
+The key's randomart image is:
++---[RSA 3072]----+
+|   .             |
+|  . .            |
+|   o    .        |
+|  o .    +       |
+|..+++   S =      |
+|.=+* . ..B +     |
+| .+.  oo* O      |
+|  .E   *+X++     |
+|.o.   ..BXXo     |
++----[SHA256]-----+
+```
+
+And add the public key to ```~/.ssh/authorized_keys``` on the Ansible host and the libvirt kvm hypervisor hosts.
+
+````
+$ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+````
+
+####### Ssh private key on SmartCard/HSM
+
+To use ssh keypair on a smartcard or HSM you can have a look at the 
+
+* [https://stafwag.github.io/blog/blog/2015/11/21/starting-to-protect-my-private-keys-with-smartcard-hsm/](https://stafwag.github.io/blog/blog/2015/11/21/starting-to-protect-my-private-keys-with-smartcard-hsm/)
+* [https://stafwag.github.io/blog/blog/2015/06/16/using-yubikey-neo-as-gpg-smartcard-for-ssh-authentication/](https://stafwag.github.io/blog/blog/2015/06/16/using-yubikey-neo-as-gpg-smartcard-for-ssh-authentication/)
+
+Or another howto setup to store your ssh private key in a secure way.
+
+
+####### Test the connect + exchange ssh host keys
+
+Login to the anisble host (localhost) and libvirt/kvm hypervisors.
+Please note that it's requirement (by default) to also allow ssh connection to install required packages for your GNU/Linux distribution.
+
+```
+$ ssh localhost
+The authenticity of host 'localhost (::1)' can't be established.
+ED25519 key fingerprint is <snip>
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'localhost' (ED25519) to the list of known hosts.
+Last login: Sat Mar  4 13:01:47 2023 from 192.168.122.1
+$ 
+```
+
+###### sudo
+
+For easy usage set up sudo with authentication to gain root access or use the ```--ask-become-pass``` when you run the playbook.
+
+```
+<ansible_user> ALL=(ALL:ALL) NOPASSWD: ALL
+```
+
+Personality I use sudo authentication and use [ansible](https://docs.ansible.com/ansible/latest/vault_guide/index.html) to store the sudo password.
+
+```
+<ansible_user> ALL=(ALL:ALL) ALL
+```
 
 ### Install the required roles
 
@@ -77,6 +173,8 @@ Copy the sample inventory
 [staf@vicky k3s_on_vms]$ cp -r etc/sample_inventory/ etc/inventory
 [staf@vicky k3s_on_vms]$ 
 ```
+
+Inventory file is located at: ```etc/inventory/k3s```.
 
 The default, parameters will install virtual machines and install k3s on them on the ```localhost``` KVM/libvirt hypervisor.
 The IP range is the default subnet - 192.168.122.0/24 - used on the default network on libvirt.
