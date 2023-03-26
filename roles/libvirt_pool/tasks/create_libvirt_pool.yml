@@ -4,7 +4,7 @@
     path: '{{ vm_path }}'
     owner: root 
     group: root
-    mode: '700'
+    mode: '755'
     state: directory
 
 - name: Create vm_path_pool_name
