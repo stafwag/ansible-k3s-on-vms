@@ -1,7 +1,7 @@
 ---
 # Create the kvm_hosts group
-# add_host doesn't seem to work with multiple hosts at the
-# same time. Setting serial: 1 to the hosts 1 by 1.
+# add_host doesn't seem to work with multiple hosts at the same time.
+# Setting serial: 1 to the hosts 1 by 1.
 - hosts: k3s_cluster
   gather_facts: false
   become: false
@@ -11,27 +11,34 @@
       import_role: name=create_kvm_host_group
       delegate_to: localhost
 
-# Run the install play on the required roles
-# Install the required packages for on the kvm
-# hypervisors
+# Tasks to setup the hypervisors
 - hosts: kvm_hosts
   gather_facts: true
   become: true
+  pre_tasks:
+    - name: Display vm_path
+      debug:
+        msg: 'vm_path: {{ vm_path }}'
+      tags:
+        - debug
+        - never
   roles:
+# Install the required packages etc for on the kvm hypervisors
      - role: requirements
-
-# Enable the default libvirt network
-# If you want to use a diffirent bridge this
-# needs to configured on the host
-- hosts: kvm_hosts
-  gather_facts: true
-  become: true
-  tasks:
-    - name: enable default libvirt network
-      community.libvirt.virt_net:
-        autostart: true
-        command: start
+# Create the libvirt_pool if the vm_path directory doesn't exists
+# virt_install will create pool automatically, but when multiple
+# virtual machine are created in parallel the installation sometimes fails
+     - role: libvirt_pool
+# Enable and autostart the default network
+  post_tasks:
+     - name: enable default libvirt network
+       community.libvirt.virt_net:
         name: default
+        command: start
+     - name: autostart default libvirt network
+       community.libvirt.virt_net:
+        name: default
+        autostart: yes
 
 # Create the virtual machines
 - name: Setup the virtual machine
@@ -40,9 +47,9 @@
   gather_facts: false
   any_errors_fatal: true
   roles:
-     - role: stafwag.delegated_vm_install
-       vars:
-         ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    - role: stafwag.delegated_vm_install
+      vars:
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
 
 # Install k3s
 - name: Install k3s

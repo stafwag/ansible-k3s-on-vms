@@ -1,20 +1,35 @@
 ---
 - name: DEBUG show vm_kvm_host
   debug:
-    msg: "DEBUG: vm_kvm_host: {{ vm_kvm_host }}"
+    msg: 'DEBUG: vm_kvm_host: {{ vm_kvm_host }}'
   tags:
     - never
     - debug
 
-- name: Add "{{ vm_kvm_host }}" to kvm_hosts
+- name: DEBUG show delegated_vm_install
+  debug:
+    msg: 'DEBUG: delegated_vm_install : {{ delegated_vm_install }}'
+  tags:
+    - never
+    - debug
+
+- name: DEBUG show delegated_vm_install.vm.path
+  debug:
+    msg: 'DEBUG: delegated_vm_install.vm.path : {{ delegated_vm_install.vm.path }}'
+  tags:
+    - never
+    - debug
+
+- name: Add '{{ vm_kvm_host }}' to kvm_hosts
   add_host:
     groups: kvm_hosts
-    name: "{{ vm_kvm_host }}"
+    name: '{{ vm_kvm_host }}'
+    vm_path: '{{ delegated_vm_install.vm.path }}'
   changed_when: false
 
 - name: DEBUG show groups
   debug:
-    msg: "DEBUG: groups: {{ groups }}"
+    msg: 'DEBUG: groups: {{ groups }}'
   tags:
     - never
     - debug

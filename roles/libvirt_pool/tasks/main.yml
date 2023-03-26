@@ -1,0 +1,15 @@
+---
+- name: DEBUG show vm_path
+  debug:
+    msg:
+      - "show vm_path"
+
+- name: Verify '{{ vm_path }}'
+  stat:
+    path: '{{ vm_path }}'
+  register: vm_path_status
+
+- name: Create libvirt pool
+  include_tasks: create_libvirt_pool.yml
+  when:
+    - not vm_path_status.stat.exists

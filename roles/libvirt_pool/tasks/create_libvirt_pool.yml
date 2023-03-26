@@ -1,0 +1,36 @@
+---
+- name: Create dir vm_path 
+  file:
+    path: '{{ vm_path }}'
+    owner: root 
+    group: root
+    mode: '700'
+    state: directory
+
+- name: Create vm_path_pool_name
+  set_fact:
+    vm_path_pool_name: '{{ vm_path | regex_replace("/*$", "") | basename }}'
+
+- name: Show vm_path_pool_name
+  debug:
+    msg: 'DEBUG: {{ vm_path_pool_name }}'
+  tags:
+    - never
+    - debug
+
+- name: Create vm_path pool
+  community.libvirt.virt_pool:
+    command: define
+    name: k3s 
+    xml: '{{ lookup("template", "dir_pool.j2") }}'
+
+- name: Activate the pool
+  community.libvirt.virt_pool:
+    name: '{{ vm_path_pool_name }}'
+    state: active
+    autostart: yes
+
+- name: Autostart the pool
+  community.libvirt.virt_pool:
+    name: '{{ vm_path_pool_name }}'
+    autostart: yes

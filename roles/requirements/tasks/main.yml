@@ -1,4 +1,5 @@
 ---
+# Get the required packages for the target GNU/Linux distribution
 - name: Set OS related variables
   include_vars: '{{ os_vars }}'
   with_first_found:
@@ -12,6 +13,7 @@
   loop_control:
     loop_var: os_vars
 
+# Run the install play on the required roles
 - name: Run the install play on the dep roles
   include_role:
     name: '{{ item }}'
@@ -20,6 +22,7 @@
   with_items:
     '{{ required_roles_install }}'
 
+# Install the required packages
 - name: Install packages
   package:
     name: '{{ item }}'
