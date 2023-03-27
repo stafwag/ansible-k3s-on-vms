@@ -36,25 +36,23 @@ to use this playbook on Centos/RedHat 8.
 
 ### Ansible
 
-#### Ansible
-
-You use this Ansible playbook, You'll need Ansible install on the Ansible host.
+To use this Ansible playbook, You'll need Ansible install on the Ansible host.
 Install the from your GNU/Linux distribution responsitory.
 
-Or install it using ```pip`` see the official Ansible documentation:
+Or install it using ```pip``` see the official Ansible documentation:
 [https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
-#### Authentication
+### Authentication
 
 For easy usage, it's recommended to set up a Ansible account that accessible over ssh without password authentication.
 You can create a local ssh key with ```ssh-keygen``` or if you really care about security use a smartcard/hsm with 
 a ssh-agent.
 
-###### ssh connection
+##### ssh connection
 
 Install and enable/start the ```sshd``` on the ansible host and the libvirt kvm hypervisor were the virtual machines/K3s will be installed.
 
-####### Local ssh key pair (less security)
+###### Local ssh key pair (less security)
 
 To create a local ssh keypair run the ```ssh-keygen``` command.
 
@@ -88,17 +86,20 @@ And add the public key to ```~/.ssh/authorized_keys``` on the Ansible host and t
 $ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ````
 
-####### Ssh private key on SmartCard/HSM
+###### Ssh private key on SmartCard/HSM
 
 To use ssh keypair on a smartcard or HSM you can have a look at the 
 
 * [https://stafwag.github.io/blog/blog/2015/11/21/starting-to-protect-my-private-keys-with-smartcard-hsm/](https://stafwag.github.io/blog/blog/2015/11/21/starting-to-protect-my-private-keys-with-smartcard-hsm/)
 * [https://stafwag.github.io/blog/blog/2015/06/16/using-yubikey-neo-as-gpg-smartcard-for-ssh-authentication/](https://stafwag.github.io/blog/blog/2015/06/16/using-yubikey-neo-as-gpg-smartcard-for-ssh-authentication/)
 
+and use a ```ssh-agent```.
+
 Or another howto setup to store your ssh private key in a secure way.
 
+###### Test the connect + exchange ssh host keys
 
-####### Test the connect + exchange ssh host keys
+Install ssh and enable the ```sshd``` service on the ansible host (localhost) and the libvirt/KVM hypervisors.
 
 Login to the anisble host (localhost) and libvirt/kvm hypervisors.
 Please note that it's requirement (by default) to also allow ssh connection to install required packages for your GNU/Linux distribution.
@@ -122,7 +123,7 @@ For easy usage set up sudo with authentication to gain root access or use the ``
 <ansible_user> ALL=(ALL:ALL) NOPASSWD: ALL
 ```
 
-Personality I use sudo authentication and use [ansible](https://docs.ansible.com/ansible/latest/vault_guide/index.html) to store the sudo password.
+Personally I use sudo authentication and use [ansible-vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html) to store the sudo password.
 
 ```
 <ansible_user> ALL=(ALL:ALL) ALL
@@ -173,7 +174,6 @@ Copy the sample inventory
 [staf@vicky k3s_on_vms]$ cp -r etc/sample_inventory/ etc/inventory
 [staf@vicky k3s_on_vms]$ 
 ```
-
 Inventory file is located at: ```etc/inventory/k3s```.
 
 The default, parameters will install virtual machines and install k3s on them on the ```localhost``` KVM/libvirt hypervisor.
