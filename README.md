@@ -1,6 +1,6 @@
 # Ansible-k3s-on-vms
 
-An ansible playbook to deploy virtual machines and deploy [K3s](https://k3s.io/).
+An Ansible playbook to deploy virtual machines and deploy [K3s](https://k3s.io/).
 
 This playbook is a wrapper around the roles:
 
@@ -16,8 +16,7 @@ To install and configure K3s on the virtual machines.
 
 To enable libvirt on the ```vm_kvm_host```.
 
-The sample inventory will install the virtual machines on ```localhost```. It's possible to install the virtual machine on multuple lbvirt/KVM hypervisors
-
+The sample inventory will install the virtual machines on ```localhost```. It's possible to install the virtual machine on multiple lbvirt/KVM hypervisors.
 
 ## Requirements
 
@@ -36,23 +35,23 @@ to use this playbook on Centos/RedHat 8.
 
 ### Ansible
 
-To use this Ansible playbook, You'll need Ansible install on the Ansible host.
-Install the from your GNU/Linux distribution responsitory.
+To use this Ansible playbook, You'll need to install Ansible on the Ansible host.
 
-Or install it using ```pip``` see the official Ansible documentation:
+Install it from your GNU/Linux distribution repository.
+
+Or install it using ```pip``` see the official Ansible documentation for more details:
 [https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
 ### Authentication
 
-For easy usage, it's recommended to set up a Ansible account that accessible over ssh without password authentication.
-You can create a local ssh key with ```ssh-keygen``` or if you really care about security use a smartcard/hsm with 
-a ssh-agent.
+For easy usage, it’s recommended to set up an Ansible account that is accessible over ssh without password authentication. You can create a local ssh key with ```ssh-keygen``` or if you care about security use a smartcard/HSM with an ssh-agent.
 
 ##### ssh connection
 
-Install and enable/start the ```sshd``` on the ansible host and the libvirt kvm hypervisor were the virtual machines/K3s will be installed.
+Install and enable/start the ```sshd``` on the Ansible host and the libvirt/KVM hypervisors where the virtual machines/K3s will be installed.
 
-###### Local ssh key pair (less security)
+
+###### Local ssh key pair without password (less security)
 
 To create a local ssh keypair run the ```ssh-keygen``` command.
 
@@ -80,29 +79,35 @@ The key's randomart image is:
 +----[SHA256]-----+
 ```
 
-And add the public key to ```~/.ssh/authorized_keys``` on the Ansible host and the libvirt kvm hypervisor hosts.
+And add the public key to ```~/.ssh/authorized_keys``` on the Ansible host and the libvirt/KVM hypervisor hosts.
 
-````
+```
 $ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-````
+```
 
-###### Ssh private key on SmartCard/HSM
+###### Local ssh key pair with password and ssh-agent (a bit more secure) 
+
+The other option is to create an ssh key pair with a password and ```ssh-agent```.
+
+###### Ssh private key on SmartCard or HSM (most secure)
 
 To use ssh keypair on a smartcard or HSM you can have a look at the 
 
 * [https://stafwag.github.io/blog/blog/2015/11/21/starting-to-protect-my-private-keys-with-smartcard-hsm/](https://stafwag.github.io/blog/blog/2015/11/21/starting-to-protect-my-private-keys-with-smartcard-hsm/)
 * [https://stafwag.github.io/blog/blog/2015/06/16/using-yubikey-neo-as-gpg-smartcard-for-ssh-authentication/](https://stafwag.github.io/blog/blog/2015/06/16/using-yubikey-neo-as-gpg-smartcard-for-ssh-authentication/)
 
-and use a ```ssh-agent```.
+and use an ```ssh-agent```.
 
-Or another howto setup to store your ssh private key in a secure way.
+Or another how-to setup to store your ssh private key securely.
 
 ###### Test the connect + exchange ssh host keys
 
-Install ssh and enable the ```sshd``` service on the ansible host (localhost) and the libvirt/KVM hypervisors.
+Install ssh and enable the ```sshd``` service on the Ansible host (localhost) and the libvirt/KVM hypervisors.
 
-Login to the anisble host (localhost) and libvirt/kvm hypervisors.
-Please note that it's requirement (by default) to also allow ssh connection to install required packages for your GNU/Linux distribution.
+Please note that it is required (by default) to also allow ssh connection on the Ansible host (localhost) to install required packages for your GNU/Linux distribution.
+
+Login to the Ansible host (localhost) and libvirt/KVM hypervisors.
+
 
 ```
 $ ssh localhost
@@ -119,11 +124,13 @@ $
 
 For easy usage set up sudo with authentication to gain root access or use the ```--ask-become-pass``` when you run the playbook.
 
+You can update the sudo permission with ```visudo``` or set up a ```sudo``` configuration file in ``` /etc/sudoers.d```.
+
 ```
 <ansible_user> ALL=(ALL:ALL) NOPASSWD: ALL
 ```
 
-Personally I use sudo authentication and use [ansible-vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html) to store the sudo password.
+I use sudo authentication with an [ansible-vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html) to store the sudo password.
 
 ```
 <ansible_user> ALL=(ALL:ALL) ALL
@@ -174,11 +181,12 @@ Copy the sample inventory
 [staf@vicky k3s_on_vms]$ cp -r etc/sample_inventory/ etc/inventory
 [staf@vicky k3s_on_vms]$ 
 ```
-Inventory file is located at: ```etc/inventory/k3s```.
 
-The default, parameters will install virtual machines and install k3s on them on the ```localhost``` KVM/libvirt hypervisor.
-The IP range is the default subnet - 192.168.122.0/24 - used on the default network on libvirt.
-This playbook will install the required libvirt packages and start/enable the default libvirt network.
+The inventory file is located at ```etc/inventory/k3s```.
+
+With default parameters, the playbook will install virtual machines on the ```localhost``` hypervisors and install k3s on them.
+The IP range is the default subnet - 192.168.122.0/24 - used on the default virtual network on libvirt.
+This playbook will install the required libvirt packages and start/enable the ```default``` libvirt network.
 
 ```
 ---
@@ -237,20 +245,24 @@ k3s_cluster:
 
 We go over some useful parameters.
 
-The full documentation of parameters are documented at the upstream roles:
+The full documentation of the parameters are available at the upstream roles:
 
 * [https://github.com/stafwag/ansible-role-delegated_vm_install](https://github.com/stafwag/ansible-role-delegated_vm_install) 
 * [https://github.com/PyratLabs/ansible-role-k3s](https://github.com/PyratLabs/ansible-role-k3s)
 
-### Deployment arget
+### Target hypervisors
 
-By default the playbook will create virtual machines on the ```localhost``` hypervisor and install k3s on it.
+By default, the playbook will create virtual machines on the ```localhost``` hypervisor and install k3s on it.
 The ```vm_kvm_host``` can be adjusted if you want to deploy the virtual machines on different hypervisor hosts.
 
 ### Network
 
-If you want to change the host machine and the ip address of the virtual machine you can update the ```vm_ip_address``` and the ```vm_kvm_host``` parameters.
-To use a bridge you can set the
+The Ansible host needs to have access to the virtual machines to perform the post-configuration and install k3s.
+The ```k3s``` inventory file is configured to use the ```default``` virtual network, with the ```default``` subnet ```192.168.122.0/24```
+
+If you want to change the host machine and the IP address of the virtual machine you can update the ```vm_ip_address``` and the ```vm_kvm_host``` parameters.
+
+To use a bridge on the target hypervisor you can set the
 
 ```
 delegated_vm_install:
@@ -259,24 +271,36 @@ delegated_vm_install:
       network: bridge:my-bridge
 ```
 
-the bridge needs to be already configured on the hypervisor host before running this playbook.
+parameter.
+
+The bridge needs to be already configured on the hypervisor host before running this playbook.
 
 ### Cpu & memory
 
-You might want adjust some parameters like to the ```cpus```,  ```memory```,  settings.
+You might want to adjust some parameters like the ```cpus```, ```memory``` settings.
 
 ### default user
 
 #### username
 
-The playbook will create a default user on the virtual machines - using ```cloud-int```. This default user is set to environment variable ```USER``` is not specified.
-If you want to another user you can set ```ansible_user``` as part of the host inventory see:
+The playbook will create a default user on the virtual machines - using ```cloud-int```. This default user is set to environment variable ```USER``` if is not specified.
+If you want to use another user you can set ```ansible_user``` as part of the host inventory see
 [https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html](https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html) for more details.
 
 #### ssh pub key
 
-The playboot will update ```~/.ssh/authorized_keys``` in the default_user home directory with the ssh public key ````~/.ssh/id_rsa.pub```  by default.
-If you want to use another ssh public key you can update the 
+The playbook will update ```~/.ssh/authorized_keys``` in the ```default_user``` home directory with the ssh public key ```~/.ssh/id_rsa.pub```  by default.
+If you want to use another ssh public key you can update the  
+
+```
+    delegated_vm_install:
+    vm:
+        default_user:
+          ssh_authorized_keys:
+            - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+```
+
+parameter.
 
 ## Execute playbook
 
@@ -285,6 +309,19 @@ If you need to type a sudo password add the ```---ask-become-pass``` argument.
 
 ```
 $ ansible-playbook --ask-become-pass site.yml
+```
+
+## Verify
+
+Connect to a master virtual machines and execute.
+
+```
+ansible@k3s-master001:~$ sudo kubectl get nodes
+NAME            STATUS   ROLES                       AGE   VERSION
+k3s-master001   Ready    control-plane,etcd,master   17h   v1.26.3+k3s1
+k3s-master002   Ready    control-plane,etcd,master   17h   v1.26.3+k3s1
+k3s-master003   Ready    control-plane,etcd,master   17h   v1.26.3+k3s1
+ansible@k3s-master001:~$ 
 ```
 
 ***Have fun!***
