@@ -304,7 +304,7 @@ parameter.
 
 ## Execute playbook
 
-Make that you have access with ssh and the kvm hypervisor hosts (localhost by default).
+Make sure that you have access with ssh and the KVM hypervisor hosts (localhost by default).
 If you need to type a sudo password add the ```---ask-become-pass``` argument.
 
 ```
@@ -313,7 +313,7 @@ $ ansible-playbook --ask-become-pass site.yml
 
 ## Verify
 
-Connect to a master virtual machines and execute.
+Connect to a master virtual machine and execute.
 
 ```
 ansible@k3s-master001:~$ sudo kubectl get nodes
