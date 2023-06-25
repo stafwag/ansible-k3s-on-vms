@@ -55,7 +55,7 @@ Install and enable/start the ```sshd``` on the Ansible host and the libvirt/KVM 
 
 To create a local ssh keypair run the ```ssh-keygen``` command.
 
-```
+```bash
 $ ssh-keygen 
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/staf/.ssh/id_rsa): 
@@ -81,7 +81,7 @@ The key's randomart image is:
 
 And add the public key to ```~/.ssh/authorized_keys``` on the Ansible host and the libvirt/KVM hypervisor hosts.
 
-```
+```bash
 $ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 
@@ -108,8 +108,7 @@ Please note that it is required (by default) to also allow ssh connection on the
 
 Login to the Ansible host (localhost) and libvirt/KVM hypervisors.
 
-
-```
+```bash
 $ ssh localhost
 The authenticity of host 'localhost (::1)' can't be established.
 ED25519 key fingerprint is <snip>
@@ -140,11 +139,14 @@ I use sudo authentication with an [ansible-vault](https://docs.ansible.com/ansib
 
 To install the required roles execute:
 
-```
+```bash
 $ ansible-galaxy install -r requirements.yml
 ```
 
 ### Debian cloud image
+
+***Note: This playbook is (not yet) compatible with Debian 12 (bookworm).*** \
+***We are working to make it compatible. Please use a Debian 11 cloud image for now.***
 
 This playbook depends on the Debian bulls-eye cloud image. The playbook will update the packages by default,
 using the daily image will reduce the update time.
@@ -157,7 +159,7 @@ The playbook will use ```~/Downloads/debian-11-generic-amd64-daily.qcow2``` by d
 
 If you want to use another location update ```boot_disk``` ```src``` 
 
-```
+```yaml
 delegated_vm_install:
       vm:
         path: /var/lib/libvirt/images/k3s/
@@ -165,7 +167,6 @@ delegated_vm_install:
           src:
             ~/Downloads/debian-11-generic-amd64-daily.qcow2
 ```
-
 
 # Usage
 
@@ -177,7 +178,7 @@ There is a sample inventory included in this repository.
 
 Copy the sample inventory
 
-```
+```bash
 [staf@vicky k3s_on_vms]$ cp -r etc/sample_inventory/ etc/inventory
 [staf@vicky k3s_on_vms]$ 
 ```
@@ -188,7 +189,7 @@ With default parameters, the playbook will install virtual machines on the ```lo
 The IP range is the default subnet - 192.168.122.0/24 - used on the default virtual network on libvirt.
 This playbook will install the required libvirt packages and start/enable the ```default``` libvirt network.
 
-```
+```yaml
 ---
 k3s_cluster:
   vars:
@@ -264,7 +265,7 @@ If you want to change the host machine and the IP address of the virtual machine
 
 To use a bridge on the target hypervisor you can set the
 
-```
+```yaml
 delegated_vm_install:
   vm:
     network:
@@ -292,7 +293,7 @@ If you want to use another user you can set ```ansible_user``` as part of the ho
 The playbook will update ```~/.ssh/authorized_keys``` in the ```default_user``` home directory with the ssh public key ```~/.ssh/id_rsa.pub```  by default.
 If you want to use another ssh public key you can update the  
 
-```
+```yaml
     delegated_vm_install:
     vm:
         default_user:
@@ -307,7 +308,7 @@ parameter.
 Make sure that you have access with ssh and the KVM hypervisor hosts (localhost by default).
 If you need to type a sudo password add the ```---ask-become-pass``` argument.
 
-```
+```bash
 $ ansible-playbook --ask-become-pass site.yml
 ```
 
@@ -315,7 +316,7 @@ $ ansible-playbook --ask-become-pass site.yml
 
 Connect to a master virtual machine and execute.
 
-```
+```bash
 ansible@k3s-master001:~$ sudo kubectl get nodes
 NAME            STATUS   ROLES                       AGE   VERSION
 k3s-master001   Ready    control-plane,etcd,master   17h   v1.26.3+k3s1
