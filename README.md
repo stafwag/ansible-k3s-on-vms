@@ -8,11 +8,11 @@ This playbook is a wrapper around the roles:
 
 To set up the virtual machines.
 
-* [https://github.com/PyratLabs/ansible-role-k3s](https://github.com/PyratLabs/ansible-role-k3s)
+* [https://github.com/stafwag/ansible-role-libvirt](https://github.com/stafwag/ansible-role-libvirt)
 
 To install and configure K3s on the virtual machines.
 
-* [https://github.com/stafwag/ansible-role-libvirt](https://github.com/stafwag/ansible-role-libvirt)
+* [https://github.com/PyratLabs/ansible-role-k3s](https://github.com/PyratLabs/ansible-role-k3s)
 
 To enable libvirt on the ```vm_kvm_host```.
 
@@ -145,17 +145,26 @@ $ ansible-galaxy install -r requirements.yml
 
 ### Debian cloud image
 
-***Note: This playbook is (not yet) compatible with Debian 12 (bookworm).*** \
-***We are working to make it compatible. Please use a Debian 11 cloud image for now.***
+This playbook depends on the Debian 12 bookworm cloud image. The playbook will update the packages by default, using the daily image will reduce the update time.
 
-This playbook depends on the Debian bulls-eye cloud image. The playbook will update the packages by default,
-using the daily image will reduce the update time.
+The playbook should work with other GNU/Linux operating systems, but I didn’t test them (yet).
 
-Download the Debian cloud image from
+The default virtual machine template is based on Debian 12 in the example inventory.
 
-[https://cloud.debian.org/images/cloud/bullseye/daily/latest/](https://cloud.debian.org/images/cloud/bullseye/daily/latest/)
+```yaml
+      vm:
+        template: templates/vms/debian/12/debian_vm_template.yml
+```
 
-The playbook will use ```~/Downloads/debian-11-generic-amd64-daily.qcow2``` by default.
+The template is part of the [https://github.com/stafwag/ansible-role-delegated_vm_install](https://github.com/stafwag/ansible-role-delegated_vm_install) Ansible role.
+
+This template uses cloud-init v2 and should be compatible with other GNU/Linux distribution cloud images that support cloud-init v2, there might be some minor differences. But you can use it as the base to support other GNu/Linux distributions
+
+Download the Debian 12 bookworm cloud image from
+
+[https://cloud.debian.org/images/cloud/bookworm/daily/latest/](https://cloud.debian.org/images/cloud/bookworm/daily/latest/)
+
+The playbook will use ```~/Downloads/debian-12-generic-amd64-daily.qcow2``` by default.
 
 If you want to use another location update ```boot_disk``` ```src``` 
 
@@ -165,7 +174,7 @@ delegated_vm_install:
         path: /var/lib/libvirt/images/k3s/
         boot_disk:
           src:
-            ~/Downloads/debian-11-generic-amd64-daily.qcow2
+            ~/Downloads/debian-12-generic-amd64-daily.qcow2
 ```
 
 # Usage
@@ -265,7 +274,7 @@ If you want to change the host machine and the IP address of the virtual machine
 
 To use a bridge on the target hypervisor you can set the
 
-```yaml
+```
 delegated_vm_install:
   vm:
     network:
@@ -293,7 +302,7 @@ If you want to use another user you can set ```ansible_user``` as part of the ho
 The playbook will update ```~/.ssh/authorized_keys``` in the ```default_user``` home directory with the ssh public key ```~/.ssh/id_rsa.pub```  by default.
 If you want to use another ssh public key you can update the  
 
-```yaml
+```
     delegated_vm_install:
     vm:
         default_user:
@@ -308,7 +317,7 @@ parameter.
 Make sure that you have access with ssh and the KVM hypervisor hosts (localhost by default).
 If you need to type a sudo password add the ```---ask-become-pass``` argument.
 
-```bash
+```
 $ ansible-playbook --ask-become-pass site.yml
 ```
 
@@ -316,7 +325,7 @@ $ ansible-playbook --ask-become-pass site.yml
 
 Connect to a master virtual machine and execute.
 
-```bash
+```
 ansible@k3s-master001:~$ sudo kubectl get nodes
 NAME            STATUS   ROLES                       AGE   VERSION
 k3s-master001   Ready    control-plane,etcd,master   17h   v1.26.3+k3s1
