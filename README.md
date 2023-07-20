@@ -87,7 +87,7 @@ $ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 ###### Local ssh key pair with password and ssh-agent (a bit more secure) 
 
-The other option is to create an ssh key pair with a password and ```ssh-agent```.
+The other option is to create a ssh key pair with a password and ```ssh-agent```.
 
 ###### Ssh private key on SmartCard or HSM (most secure)
 
@@ -96,7 +96,7 @@ To use ssh keypair on a smartcard or HSM you can have a look at the
 * [https://stafwag.github.io/blog/blog/2015/11/21/starting-to-protect-my-private-keys-with-smartcard-hsm/](https://stafwag.github.io/blog/blog/2015/11/21/starting-to-protect-my-private-keys-with-smartcard-hsm/)
 * [https://stafwag.github.io/blog/blog/2015/06/16/using-yubikey-neo-as-gpg-smartcard-for-ssh-authentication/](https://stafwag.github.io/blog/blog/2015/06/16/using-yubikey-neo-as-gpg-smartcard-for-ssh-authentication/)
 
-and use an ```ssh-agent```.
+and use a ```ssh-agent```.
 
 Or another how-to setup to store your ssh private key securely.
 
@@ -158,7 +158,7 @@ The default virtual machine template is based on Debian 12 in the example invent
 
 The template is part of the [https://github.com/stafwag/ansible-role-delegated_vm_install](https://github.com/stafwag/ansible-role-delegated_vm_install) Ansible role.
 
-This template uses cloud-init v2 and should be compatible with other GNU/Linux distribution cloud images that support cloud-init v2, there might be some minor differences. But you can use it as the base to support other GNu/Linux distributions
+This template uses cloud-init v2 and should be compatible with other GNU/Linux distribution cloud images that support cloud-init v2, there might be some minor differences. But you can use it as the base to support other GNU/Linux distributions
 
 Download the Debian 12 bookworm cloud image from
 
