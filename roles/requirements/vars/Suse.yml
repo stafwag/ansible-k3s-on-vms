@@ -1,0 +1,4 @@
+---
+required_packages:
+  - python3-lxml
+  - python3-libvirt-python
