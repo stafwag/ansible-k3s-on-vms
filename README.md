@@ -23,15 +23,17 @@ The sample inventory will install the virtual machines on ```localhost```. It's 
 ### Supported GNU/Linux Distributions
 
 It should work on most GNU/Linux distributions.
-```cloud-localds``` is required. ```cloud-localds``` was available on
-Centos/RedHat 7 but not on Redhat 8. You'll need to install it manually
-to use this playbook on Centos/RedHat 8.
+
+The provisioning is done with [cloud-init](https://cloud-init.io/) by the Ansible role: [stafwag.cloud_localds](https://github.com/stafwag/ansible-role-cloud_localds).
+
+On GNU/Linux distributions that have the ```cloud-localds``` packages the ```cloud-localds``` command is used. On distributions that don't have the ```cloud_localds``` in their package
+repositories, [GNU xorriso](https://www.gnu.org/software/xorriso/) is used.
+
+The playbook was tested on the following GNU/Linux distributions.
 
 * Archlinux
-* Debian
-* Centos 7
-* RedHat 7
-* Ubuntu
+* Debian Family
+* RedHat Family
 
 ### Ansible
 
