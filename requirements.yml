@@ -1,10 +1,13 @@
 ---
-- src: stafwag.libvirt
-- src: stafwag.qemu_img
-- src: stafwag.cloud_localds
-- src: stafwag.virt_install_import
-- src: stafwag.virt_install_vm
-- src: stafwag.delegated_vm_install
-- src: stafwag.package_update
-- src: stafwag.etc_hosts
-- src: xanmanning.k3s
+roles:
+  - src: stafwag.libvirt
+  - src: stafwag.qemu_img
+  - src: stafwag.cloud_localds
+  - src: stafwag.virt_install_import
+  - src: stafwag.virt_install_vm
+  - src: stafwag.delegated_vm_install
+  - src: stafwag.package_update
+  - src: stafwag.etc_hosts
+  - src: xanmanning.k3s
+collections:
+  - community.libvirt
