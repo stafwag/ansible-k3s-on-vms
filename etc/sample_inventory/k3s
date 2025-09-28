@@ -18,11 +18,11 @@ k3s_cluster:
         update_ssh_known_hosts:
           true
       vm:
-        template: templates/vms/debian/12/debian_vm_template.yml
+        template: templates/vms/debian/13/debian_vm_template.yml
         path: /var/lib/libvirt/images/k3s/
         boot_disk:
           src:
-            ~/Downloads/debian-12-generic-amd64-daily.qcow2
+            ~/Downloads/debian-13-generic-amd64-daily.qcow2
           size: 50G
         memory: 4096
         cpus: 2
