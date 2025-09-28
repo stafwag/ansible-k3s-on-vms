@@ -58,11 +58,11 @@ Install and enable/start the ```sshd``` on the Ansible host and the libvirt/KVM 
 To create a local ssh keypair run the ```ssh-keygen``` command.
 
 ```bash
-$ ssh-keygen 
+$ ssh-keygen
 Generating public/private rsa key pair.
-Enter file in which to save the key (/home/staf/.ssh/id_rsa): 
-Enter passphrase (empty for no passphrase): 
-Enter same passphrase again: 
+Enter file in which to save the key (/home/staf/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
 Your identification has been saved in /home/staf/.ssh/id_rsa
 Your public key has been saved in /home/staf/.ssh/id_rsa.pub
 The key fingerprint is:
@@ -87,13 +87,13 @@ And add the public key to ```~/.ssh/authorized_keys``` on the Ansible host and t
 $ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 
-###### Local ssh key pair with password and ssh-agent (a bit more secure) 
+###### Local ssh key pair with password and ssh-agent (a bit more secure)
 
 The other option is to create a ssh key pair with a password and ```ssh-agent```.
 
 ###### Ssh private key on SmartCard or HSM (most secure)
 
-To use ssh keypair on a smartcard or HSM you can have a look at the 
+To use ssh keypair on a smartcard or HSM you can have a look at the
 
 * [https://stafwag.github.io/blog/blog/2015/11/21/starting-to-protect-my-private-keys-with-smartcard-hsm/](https://stafwag.github.io/blog/blog/2015/11/21/starting-to-protect-my-private-keys-with-smartcard-hsm/)
 * [https://stafwag.github.io/blog/blog/2015/06/16/using-yubikey-neo-as-gpg-smartcard-for-ssh-authentication/](https://stafwag.github.io/blog/blog/2015/06/16/using-yubikey-neo-as-gpg-smartcard-for-ssh-authentication/)
@@ -118,7 +118,7 @@ This key is not known by any other names.
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 Warning: Permanently added 'localhost' (ED25519) to the list of known hosts.
 Last login: Sat Mar  4 13:01:47 2023 from 192.168.122.1
-$ 
+$
 ```
 
 ###### sudo
@@ -147,28 +147,28 @@ $ ansible-galaxy install -r requirements.yml
 
 ### Debian cloud image
 
-This playbook depends on the Debian 12 bookworm cloud image. The playbook will update the packages by default, using the daily image will reduce the update time.
+This playbook depends on the Debian 13 trixie cloud image. The playbook will update the packages by default, using the daily image will reduce the update time.
 
 The playbook should work with other GNU/Linux operating systems, but I didn’t test them (yet).
 
-The default virtual machine template is based on Debian 12 in the example inventory.
+The default virtual machine template is based on Debian 13 in the example inventory.
 
 ```yaml
       vm:
-        template: templates/vms/debian/12/debian_vm_template.yml
+        template: templates/vms/debian/13/debian_vm_template.yml
 ```
 
 The template is part of the [https://github.com/stafwag/ansible-role-delegated_vm_install](https://github.com/stafwag/ansible-role-delegated_vm_install) Ansible role.
 
 This template uses cloud-init v2 and should be compatible with other GNU/Linux distribution cloud images that support cloud-init v2, there might be some minor differences. But you can use it as the base to support other GNU/Linux distributions
 
-Download the Debian 12 bookworm cloud image from
+Download the Debian 13 trixie cloud image from
 
-[https://cloud.debian.org/images/cloud/bookworm/daily/latest/](https://cloud.debian.org/images/cloud/bookworm/daily/latest/)
+[https://cloud.debian.org/images/cloud/trixie/daily/latest/](https://cloud.debian.org/images/cloud/trixie/daily/latest/)
 
-The playbook will use ```~/Downloads/debian-12-generic-amd64-daily.qcow2``` by default.
+The playbook will use ```~/Downloads/debian-13-generic-amd64-daily.qcow2``` by default.
 
-If you want to use another location update ```boot_disk``` ```src``` 
+If you want to use another location update ```boot_disk``` ```src```
 
 ```yaml
 delegated_vm_install:
@@ -176,7 +176,7 @@ delegated_vm_install:
         path: /var/lib/libvirt/images/k3s/
         boot_disk:
           src:
-            ~/Downloads/debian-12-generic-amd64-daily.qcow2
+            ~/Downloads/debian-13-generic-amd64-daily.qcow2
 ```
 
 # Usage
@@ -191,7 +191,7 @@ Copy the sample inventory
 
 ```bash
 [staf@vicky k3s_on_vms]$ cp -r etc/sample_inventory/ etc/inventory
-[staf@vicky k3s_on_vms]$ 
+[staf@vicky k3s_on_vms]$
 ```
 
 The inventory file is located at ```etc/inventory/k3s```.
@@ -224,7 +224,7 @@ k3s_cluster:
         path: /var/lib/libvirt/images/k3s/
         boot_disk:
           src:
-            ~/Downloads/debian-12-generic-amd64-daily.qcow2            
+            ~/Downloads/debian-13-generic-amd64-daily.qcow2
           size: 50G
         memory: 4096
         cpus: 2
@@ -259,7 +259,7 @@ We go over some useful parameters.
 
 The full documentation of the parameters are available at the upstream roles:
 
-* [https://github.com/stafwag/ansible-role-delegated_vm_install](https://github.com/stafwag/ansible-role-delegated_vm_install) 
+* [https://github.com/stafwag/ansible-role-delegated_vm_install](https://github.com/stafwag/ansible-role-delegated_vm_install)
 * [https://github.com/PyratLabs/ansible-role-k3s](https://github.com/PyratLabs/ansible-role-k3s)
 
 ### Target hypervisors
@@ -302,7 +302,7 @@ If you want to use another user you can set ```ansible_user``` as part of the ho
 #### ssh pub key
 
 The playbook will update ```~/.ssh/authorized_keys``` in the ```default_user``` home directory with the ssh public key ```~/.ssh/id_rsa.pub```  by default.
-If you want to use another ssh public key you can update the  
+If you want to use another ssh public key you can update the
 
 ```
     delegated_vm_install:
@@ -333,7 +333,7 @@ NAME            STATUS   ROLES                       AGE   VERSION
 k3s-master001   Ready    control-plane,etcd,master   17h   v1.26.3+k3s1
 k3s-master002   Ready    control-plane,etcd,master   17h   v1.26.3+k3s1
 k3s-master003   Ready    control-plane,etcd,master   17h   v1.26.3+k3s1
-ansible@k3s-master001:~$ 
+ansible@k3s-master001:~$
 ```
 
 ***Have fun!***
